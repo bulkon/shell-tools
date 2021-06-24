@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+REMOTE="$1"
+DEAULT_DNS_SUFFIX="xmargin.io"
+USER="kx"
+SESSION="bk"
+
+if [[ ! "${REMOTE}" == *.* ]]; then
+	REMOTE="${REMOTE}"."${DEAULT_DNS_SUFFIX}"
+fi
+
+ssh -t "${USER}"@"${REMOTE}" "
+	tmux has-session -t ${SESSION} 2>/dev/null
+
+	if [ \$? -ne 0 ]; then
+	# TODO: Create new session
+		tmux -f ~/.tmux.conf new-session -s ${SESSION} 
+	else
+		tmux attach-session -t ${SESSION}
+	fi
+"
